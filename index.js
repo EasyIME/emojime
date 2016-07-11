@@ -17,6 +17,7 @@
 'use strict';
 
 let emojione = require('emojione');
+let debug    = require('debug')('nime:emojime');
 
 
 function respOnFilterKeyDown(request, state) {
@@ -81,9 +82,9 @@ function reduceOnKeyDown(request, preState) {
     if (charCode === ':'.charCodeAt(0)) {
       let emojikey = compositionString + ':';
 
-      console.log('Get emoji short name');
-      console.log(emojikey);
-      console.log(emojione.shortnameToUnicode(emojikey));
+      debug('Get emoji short name');
+      debug(emojikey);
+      debug(emojione.shortnameToUnicode(emojikey));
       return Object.assign({}, preState, {
         action: 'COMMIT_STRING',
         commitString: emojione.shortnameToUnicode(emojikey),

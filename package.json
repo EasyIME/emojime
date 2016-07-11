@@ -10,6 +10,7 @@
   "author": "Lee <jessy1092@gmail.com>",
   "license": "LGPL-2.1",
   "dependencies": {
+    "debug": "^2.2.0",
     "emojione": "^2.2.5"
   },
   "devDependencies": {
