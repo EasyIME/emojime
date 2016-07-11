@@ -16,81 +16,133 @@
 
 'use strict';
 
-let nime = require('nime');
-let KEYCODE = require('nime/lib/keyCodes');
 let emojione = require('emojione');
 
-let server = nime.createServer();
 
-server.on('connection', (service) => {
+function respOnFilterKeyDown(request, state) {
 
-  let candidateList = [];
-  let showCandidates = false;
-  let compositionString = '';
-  let compositionCursor = 0;
+  let {charCode, seqNum} = request;
+  let {compositionString} = state;
 
-  service.on('filterKeyDown', (msg, keyHandler) => {
+  let response = {
+    return: false,
+    success: true,
+    seqNum
+  };
 
-    console.log('custom filterKeyDown');
+  if (compositionString !== '' || charCode === ':'.charCodeAt(0)) {
+    response['return'] = true;
+  }
 
-    let charCode = keyHandler.charCode;
-    let seqNum = msg['seqNum'];
+  return response;
+}
 
-    let response = {
-      'return': false
-    };
+function respOnKeyDown(request, state) {
 
-    if (compositionString !== '' || charCode === ':'.charCodeAt(0)) {
-      response['return'] = true;
+  let {keyCode, seqNum} = request;
+
+  let response = {
+    success: true,
+    return: true,
+    seqNum
+  };
+
+  if (state['action'] === 'UPDATE_STRING') {
+    response['compositionString'] = state['compositionString'];
+    response['compositionCursor'] = state['compositionCursor'];
+    return response;
+  }
+
+  if (state['action'] === 'COMMIT_STRING') {
+    response['commitString']      = state['commitString'];
+    response['compositionString'] = state['compositionString'];
+    return response;
+  }
+
+  return response;
+
+}
+
+function reduceOnKeyDown(request, preState) {
+
+  let {keyCode, charCode, seqNum} = request;
+  let {compositionString, compositionCursor} = preState;
+
+
+  if (compositionString === '' && charCode === ':'.charCodeAt(0)) {
+    return Object.assign({}, preState, {
+      action: 'UPDATE_STRING',
+      compositionString: ':',
+      compositionCursor: 1
+    });
+  }
+
+  if (compositionString !== '') {
+    if (charCode === ':'.charCodeAt(0)) {
+      let emojikey = compositionString + ':';
+
+      console.log('Get emoji short name');
+      console.log(emojikey);
+      console.log(emojione.shortnameToUnicode(emojikey));
+      return Object.assign({}, preState, {
+        action: 'COMMIT_STRING',
+        commitString: emojione.shortnameToUnicode(emojikey),
+        compositionString: '',
+        compositionCursor: 0
+      });
+
+    } else if (
+      (charCode >= 'a'.charCodeAt(0) && charCode <= 'z'.charCodeAt(0)) ||
+      (charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0))) {
+
+      return Object.assign({}, preState, {
+        action: 'UPDATE_STRING',
+        compositionString: compositionString + String.fromCharCode(charCode),
+        compositionCursor: compositionCursor + 1
+      });
+    }
+  }
+
+  return preState;
+}
+
+function reduceOnCompositionTerminated(request, preState) {
+  return Object.assign({}, preState, {
+    commitString: '',
+    compositionString: '',
+    compositionCursor: 0
+  });
+}
+
+module.exports = {
+  textReducer(request, preState) {
+
+    if (request['method'] === 'init') {
+      return Object.assign({}, preState, {
+        action: '',
+        compositionString: '',
+        compositionCursor: 0,
+        showCandidates: false
+      });
     }
 
-    service.writeSuccess(seqNum, response);
-  });
-
-  service.on('onKeyDown', (msg, keyHandler) => {
-    console.log('custom onKeyDown');
-
-    let keyCode = keyHandler.keyCode;
-    let charCode = keyHandler.charCode;
-    let seqNum = msg['seqNum'];
-
-    let response = {
-      'return': true
-    };
-
-    if (compositionString === '' && charCode === ':'.charCodeAt(0)) {
-      compositionString = ':';
-      compositionCursor = 1;
-
-      response['compositionString'] = compositionString;
-      response['compositionCursor'] = compositionCursor;
-
-    } else if (compositionString !== '') {
-
-      if (charCode === ':'.charCodeAt(0)) {
-        let emojikey = compositionString + ':';
-        compositionString = '';
-        compositionCursor = 0;
-
-        console.log('Get emoji short name');
-        console.log(emojikey);
-        console.log(emojione.shortnameToUnicode(emojikey));
-        response['commitString'] = emojione.shortnameToUnicode(emojikey);
-        response['compositionString'] = '';
-
-      } else if (
-        (charCode >= 'a'.charCodeAt(0) && charCode <= 'z'.charCodeAt(0)) ||
-        (charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0))) {
-
-        compositionString += String.fromCharCode(charCode);
-        compositionCursor += 1;
-      }
-      response['compositionString'] = compositionString;
-      response['compositionCursor'] = compositionCursor;
-
+    if (request['method'] === 'onKeyDown') {
+      return reduceOnKeyDown(request, preState);
     }
-    service.writeSuccess(seqNum, response);
-  });
-});
 
-server.listen();
+    if (request['method'] === 'onCompositionTerminated') {
+      return reduceOnCompositionTerminated(request, preState);
+    }
+    return preState;
+  },
+
+  response(request, state) {
+    if (request['method'] === 'filterKeyDown') {
+      return respOnFilterKeyDown(request, state);
+
+    } else if (request['method'] === 'onKeyDown') {
+      return respOnKeyDown(request, state);
+    }
+    return {success: true, seqNum: request['seqNum']};
+  }
+}
