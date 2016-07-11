@@ -13,10 +13,8 @@ The 'real' input method editor of Emoji on windows. Implement by [emojione](http
 
 Now NIME doesn't has it own installation, so we use PIME for development `emojime`.
 
-- Prepare Node v4.x environment.
-- Install [PIME](https://github.com/EasyIME/PIME/releases) v0.09
-- Kill `PIMELauncher.exe` process
-- Kill `pythonw.exe` process
+- Prepare Node v6.x environment.
+- Install [PIME](https://github.com/EasyIME/PIME/releases) v0.14.x
 - Create `emojime` folder into `C:\Program Files (x86)\PIME\server\input_methods\`
 - Copy `ime.json` and `icon.ico` into `C:\Program Files (x86)\PIME\server\input_methods\emojime\`
 - `regsvr32 "C:\Program Files (X86)\PIME\x86\PIMETextService.dll" (run as administrator)`
