@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lee <jessy1092@gmail.com>",
-  "license": "LGPL-2.1",
+  "license": "MIT",
   "dependencies": {
     "debug": "^2.2.0",
     "emojione": "^2.2.5"
