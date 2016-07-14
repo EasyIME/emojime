@@ -1,8 +1,9 @@
 'use strict';
 
-let debug    = require('debug')('nime:emojime:reducer');
+let debug = require('debug')('nime:emojime:reducer');
 
 let compositionMode = require('./compositionMode');
+let candidateMode   = require('./candidateMode');
 
 function reduceOnKeyDown(request, preState) {
 
@@ -24,6 +25,10 @@ function reduceOnKeyDown(request, preState) {
 
   if (compositionString !== '') {
 
+    if(showCandidates) {
+      return candidateMode(request, preState);
+    }
+
     if (!showCandidates) {
       return compositionMode(request, preState);
     }
@@ -36,7 +41,9 @@ function reduceOnCompositionTerminated(request, preState) {
   return Object.assign({}, preState, {
     commitString: '',
     compositionString: '',
-    compositionCursor: 0
+    compositionCursor: 0,
+    candidateList: [],
+    candidateCursor: 0
   });
 }
 

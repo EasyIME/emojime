@@ -23,7 +23,9 @@ module.exports = {
         action: '',
         compositionString: '',
         compositionCursor: 0,
-        showCandidates: false
+        showCandidates: false,
+        candidateList: [],
+        candidateCursor: 0
       });
     }
 

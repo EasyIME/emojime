@@ -29,6 +29,25 @@ function respOnKeyDown(request, state) {
     seqNum
   };
 
+  if (state['action'] === 'SHOW_CANDIDATES') {
+    if (state['showCandidates']) {
+      response['candidateList'] = state['candidateList'];
+    }
+    response['showCandidates'] = state['showCandidates'];
+    return response;
+  }
+
+  if (state['action'] === 'UPDATE_CANDIDATE') {
+    response['candidateCursor'] = state['candidateCursor'];
+    return response;
+  }
+
+  if (state['action'] === 'SELECT_CANDIDATE') {
+    response['compositionString'] = state['compositionString'];
+    response['showCandidates']    = state['showCandidates'];
+    return response;
+  }
+
   if (state['action'] === 'UPDATE_STRING') {
     response['compositionString'] = state['compositionString'];
     response['compositionCursor'] = state['compositionCursor'];
@@ -36,6 +55,7 @@ function respOnKeyDown(request, state) {
   }
 
   if (state['action'] === 'COMMIT_STRING') {
+    response['showCandidates']    = state['showCandidates'];
     response['commitString']      = state['commitString'];
     response['compositionString'] = state['compositionString'];
     return response;

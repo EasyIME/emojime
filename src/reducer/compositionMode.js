@@ -14,6 +14,30 @@ function compositionMode(request, preState) {
     showCandidates
   } = preState;
 
+  // Show candidate list
+  if (keyCode === KEYCODE.VK_DOWN) {
+
+    // Must larger ':'.length
+    if (compositionString.length > 1) {
+
+      let candidateList = [];
+
+      emojione.mapEmojioneList((unicode, shortname) => {
+        if (shortname.indexOf(compositionString.slice(1)) >= 0 && candidateList.length < 9) {
+          candidateList.push(`${emojione.convert(unicode)} ${shortname}`);
+        }
+      });
+
+      if (candidateList.length > 0) {
+        return Object.assign({}, preState, {
+          action: 'SHOW_CANDIDATES',
+          showCandidates: true,
+          candidateList
+        });
+      }
+    }
+  }
+
   // Move cursor left
   if (keyCode === KEYCODE.VK_LEFT) {
     if (compositionCursor > 0) {
