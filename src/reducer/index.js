@@ -51,6 +51,22 @@ function reduceOnKeyDown(request, preState) {
       });
     }
 
+    // Delete compositionString
+    if (keyCode === KEYCODE.VK_BACK) {
+      if (compositionString === '') {
+        return Object.assign({}, preState, {action: ''});
+      }
+      let cursor = compositionCursor;
+      compositionCursor -= 1;
+      compositionString = compositionString.slice(0, compositionCursor) + compositionString.slice(cursor);
+
+      return Object.assign({}, preState, {
+        action: 'UPDATE_STRING',
+        compositionString,
+        compositionCursor
+      });
+    }
+
     if (charCode === ':'.charCodeAt(0)) {
       let emojikey = compositionString + ':';
 
