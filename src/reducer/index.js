@@ -1,6 +1,7 @@
 'use strict';
 
 let emojione = require('emojione');
+let KEYCODE  = require('nime/lib/keyCodes');
 let debug    = require('debug')('nime:emojime:reducer');
 
 function reduceOnKeyDown(request, preState) {
@@ -17,6 +18,27 @@ function reduceOnKeyDown(request, preState) {
   }
 
   if (compositionString !== '') {
+
+    if (keyCode === KEYCODE.VK_LEFT) { // Move cursor left
+      if (compositionCursor > 0) {
+        return Object.assign({}, preState, {
+          action: 'UPDATE_STRING',
+          compositionCursor: compositionCursor - 1
+        });
+      }
+      return Object.assign({}, preState, {action: ''});
+    }
+
+    if (keyCode === KEYCODE.VK_RIGHT) { // Move cursor right
+      if (compositionCursor < compositionString.length) {
+        return Object.assign({}, preState, {
+          action: 'UPDATE_STRING',
+          compositionCursor: compositionCursor + 1
+        });
+      }
+      return Object.assign({}, preState, {action: ''});
+    }
+
     if (charCode === ':'.charCodeAt(0)) {
       let emojikey = compositionString + ':';
 
@@ -30,7 +52,9 @@ function reduceOnKeyDown(request, preState) {
         compositionCursor: 0
       });
 
-    } else if (
+    }
+
+    if (
       (charCode >= 'a'.charCodeAt(0) && charCode <= 'z'.charCodeAt(0)) ||
       (charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0))) {
 
