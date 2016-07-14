@@ -61,6 +61,7 @@ function candidateMode(request, preState) {
     return Object.assign({}, preState, {
       action: 'COMMIT_STRING',
       showCandidates: false,
+      compositionString: '',
       commitString: selectCandidate.split(' ')[0]
     });
   }
@@ -72,6 +73,7 @@ function candidateMode(request, preState) {
     return Object.assign({}, preState, {
       action: 'COMMIT_STRING',
       showCandidates: false,
+      compositionString: '',
       commitString: selectCandidate.split(' ')[0]
     });
   }
