@@ -9,6 +9,7 @@ function reduceOnKeyDown(request, preState) {
   let {keyCode, charCode, seqNum} = request;
   let {compositionString, compositionCursor} = preState;
 
+  // Start input
   if (compositionString === '' && charCode === ':'.charCodeAt(0)) {
     return Object.assign({}, preState, {
       action: 'UPDATE_STRING',
@@ -19,7 +20,8 @@ function reduceOnKeyDown(request, preState) {
 
   if (compositionString !== '') {
 
-    if (keyCode === KEYCODE.VK_LEFT) { // Move cursor left
+    // Move cursor left
+    if (keyCode === KEYCODE.VK_LEFT) {
       if (compositionCursor > 0) {
         return Object.assign({}, preState, {
           action: 'UPDATE_STRING',
@@ -29,7 +31,8 @@ function reduceOnKeyDown(request, preState) {
       return Object.assign({}, preState, {action: ''});
     }
 
-    if (keyCode === KEYCODE.VK_RIGHT) { // Move cursor right
+    // Move cursor right
+    if (keyCode === KEYCODE.VK_RIGHT) {
       if (compositionCursor < compositionString.length) {
         return Object.assign({}, preState, {
           action: 'UPDATE_STRING',
@@ -37,6 +40,15 @@ function reduceOnKeyDown(request, preState) {
         });
       }
       return Object.assign({}, preState, {action: ''});
+    }
+
+    // Exist composition mode
+    if (keyCode === KEYCODE.VK_ESCAPE) {
+      return Object.assign({}, preState, {
+        action: 'UPDATE_STRING',
+        compositionString: '',
+        compositionCursor: 0
+      });
     }
 
     if (charCode === ':'.charCodeAt(0)) {
