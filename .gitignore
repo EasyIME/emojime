@@ -1,1 +1,6 @@
+
+# node
 node_modules/
+
+# npm
+*.log
