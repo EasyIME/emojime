@@ -14,6 +14,16 @@ function compositionMode(request, preState) {
     showCandidates
   } = preState;
 
+  // ':' + space would fast input ': ' for typing
+  if (keyCode == KEYCODE.VK_SPACE && compositionString == ':') {
+    return Object.assign({}, preState, {
+      action: 'COMMIT_STRING',
+      compositionString: '',
+      compositionCursor: 0,
+      commitString: ': '
+    });
+  }
+
   // Show candidate list
   if (keyCode === KEYCODE.VK_DOWN) {
 
