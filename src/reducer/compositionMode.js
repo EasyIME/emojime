@@ -112,7 +112,8 @@ function compositionMode(request, preState) {
 
   if (
     (charCode >= 'a'.charCodeAt(0) && charCode <= 'z'.charCodeAt(0)) ||
-    (charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0))) {
+    (charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0)) ||
+    (charCode == '_'.charCodeAt(0))) {
 
     return Object.assign({}, preState, {
       action: 'UPDATE_STRING',
