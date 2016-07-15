@@ -79,9 +79,10 @@ function compositionMode(request, preState) {
     });
   }
 
-  // Delete compositionString
+  // Delete compositionString. But should not delete ':' if has other char
   if (keyCode === KEYCODE.VK_BACK) {
-    if (compositionString === '') {
+    if ((compositionString === '') ||
+        (compositionCursor <= 1 && compositionString !== ':')) {
       return Object.assign({}, preState, {action: ''});
     }
     let cursor = compositionCursor;
