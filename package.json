@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^2.2.0",
-    "emojione": "^2.2.5"
+    "emojione": "^2.2.6"
   },
   "engines": {
     "node": ">=6"
