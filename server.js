@@ -11,6 +11,6 @@ let config = JSON.parse(configFile);
 
 config['textService'] = service;
 
-let server = nime.createServer(undefined, [config]);
+let server = nime.createServer([config]);
 
 server.listen();
