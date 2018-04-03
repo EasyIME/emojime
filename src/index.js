@@ -3,6 +3,7 @@
 
 let emojione = require('emojione');
 let debug    = require('debug')('nime:emojime');
+let config = require('./config');
 
 let {
   reduceOnKeyDown,
@@ -40,11 +41,14 @@ module.exports = {
   },
 
   response(request, state) {
+    let res = {success: true, seqNum: request['seqNum']};
     if (request['method'] === 'filterKeyDown') {
       return respOnFilterKeyDown(request, state);
 
     } else if (request['method'] === 'onKeyDown') {
       return respOnKeyDown(request, state);
+    } else if (request['method'] === 'onActivate') {
+      return Object.assign({}, res, { customizeUI: { candPerRow: config.candPerRow, candUseCursor: true }})
     }
     return {success: true, seqNum: request['seqNum']};
   }
