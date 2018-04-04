@@ -2,6 +2,7 @@
 
 let debug    = require('debug')('nime:emojime:composition');
 let KEYCODE  = require('nime/lib/keyCodes');
+let config = require('../config');
 
 function candidateMode(request, preState) {
 
@@ -23,7 +24,7 @@ function candidateMode(request, preState) {
   }
 
   if (keyCode === KEYCODE.VK_DOWN) {
-    candidateCursor = (candidateCursor + 3) % candidateList.length;
+    candidateCursor = (candidateCursor + config.candPerRow) % candidateList.length;
     return Object.assign({}, preState, {
       action: 'UPDATE_CANDIDATE',
       candidateCursor
@@ -31,7 +32,7 @@ function candidateMode(request, preState) {
   }
 
   if (keyCode === KEYCODE.VK_UP) {
-    candidateCursor = candidateCursor < 3 ? 0 : candidateCursor - 3;
+    candidateCursor = candidateCursor < config.candPerRow ? 0 : candidateCursor - config.candPerRow;
     return Object.assign({}, preState, {
       action: 'UPDATE_CANDIDATE',
       candidateCursor
